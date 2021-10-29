@@ -18,7 +18,7 @@ module.exports = ({ bot, knex, config, commands }) => {
   });
 
   // Anonymous replies only show the role, not the username
-  commands.addInboxThreadCommand("anonreply", "[text$]", async (msg, args, thread) => {
+  /*commands.addInboxThreadCommand("anonreply", "[text$]", async (msg, args, thread) => {
     if (! args.text && msg.attachments.length === 0) {
       utils.postError(msg.channel, "Text or attachment required");
       return;
@@ -28,7 +28,7 @@ module.exports = ({ bot, knex, config, commands }) => {
     if (replied) msg.delete();
   }, {
     aliases: ["ar"]
-  });
+  });*/
 
   if (config.allowStaffEdit) {
     commands.addInboxThreadCommand("edit", "<messageNumber:number> <text:string$>", async (msg, args, thread) => {
