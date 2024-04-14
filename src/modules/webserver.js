@@ -61,7 +61,9 @@ server.use(helmet({
       directives: {
         "frame-ancestors": ["'self'", "buildtheearth.net", "*.buildtheearth.net", "*"],
       },
-    }));
+  
+    },
+frameguard: false}));
 server.use(cors()); 
 
 server.get("/logs/:threadId", serveLogs);
