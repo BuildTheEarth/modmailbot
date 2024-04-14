@@ -57,13 +57,8 @@ function serveAttachments(req, res) {
 
 const server = express();
 server.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "frame-ancestors": ["'self'", "buildtheearth.net", "*.buildtheearth.net", "*"],
-      },
-  
-    },
-frameguard: false}));
+  frameguard: false
+}));
 server.use(cors()); 
 
 server.get("/logs/:threadId", serveLogs);
