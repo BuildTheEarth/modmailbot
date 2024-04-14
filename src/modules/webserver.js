@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors') 
 const helmet = require("helmet");
 const mime = require("mime");
 const url = require("url");
@@ -56,6 +57,7 @@ function serveAttachments(req, res) {
 
 const server = express();
 server.use(helmet());
+server.use(cors()); 
 
 server.get("/logs/:threadId", serveLogs);
 server.get("/attachments/:attachmentId/:filename", serveAttachments);
