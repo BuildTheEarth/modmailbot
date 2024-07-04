@@ -10,6 +10,7 @@ const config = require("../cfg");
 const threads = require("../data/threads");
 const attachments = require("../data/attachments");
 const { formatters } = require("../formatters");
+const knex = require("../knex");
 
 function notfound(res) {
   res.status(404).send("Page Not Found");
@@ -55,6 +56,48 @@ function serveAttachments(req, res) {
   })
 }
 
+async function serveTickets(req, res) {
+  res.type("application/json");
+
+  const openOnly = req.query.open ? true: false
+
+  const closedOnly = req.query.closed ? true: false
+
+  if (openOnly && closedOnly) {
+    res.status(400).send({ error: "MALFORMED_INPUT", message: "Cannot have both open and closed parameters" })
+    return
+  }
+
+  let query = knex("threads")
+      .orderBy("thread_number", "DESC")
+    
+  if (openOnly)  query = query.where("status", 1)
+
+  if (closedOnly)  query = query.where("status", 2)
+  
+  const result = await query.select()
+
+  res.status(200).send(result)
+  return 
+
+}
+
+async function serveTicketStats(req, res) {
+  res.type("application/json");
+
+  let query = knex("threads")
+    .select('status')
+    .count('id', { as: 'count' })
+    .groupBy('status')
+  
+  const result = await query.select()
+
+  res.status(200).send(result)
+  return 
+
+
+}
+
 const server = express();
 server.use(helmet({
   frameguard: false
@@ -63,6 +106,9 @@ server.use(cors());
 
 server.get("/logs/:threadId", serveLogs);
 server.get("/attachments/:attachmentId/:filename", serveAttachments);
+server.get("/api/v1/tickets", serveTickets)
+server.get("/api/v1/ticketStats", serveTicketStats)
+//here
 
 server.on("error", err => {
   console.log("[WARN] Web server error:", err.message);
